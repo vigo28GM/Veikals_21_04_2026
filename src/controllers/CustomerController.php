@@ -1,35 +1,51 @@
 <?php
 
 class CustomerController {
-    public static function index() {
-        $result = DB::query("SELECT * FROM customers");
+    
+    private static function render($view, $data = []) {
+        extract($data);
+        ob_start();
+        require __DIR__ . "/../views/customers/$view.php";
+        $content = ob_get_clean();
+        require __DIR__ . "/../views/layout.php";
+    }
 
-        $output = "<h2>Klientu saraksts</h2>";
-        if ($result->rowCount() > 0) {
-            $output .= "<table border='1'>
-                    <tr>
-                        <th>ID</th>
-                        <th>Vārds</th>
-                        <th>Uzvārds</th>
-                        <th>E-pasts</th>
-                        <th>Dzimšanas datums</th>
-                        <th>Punkti</th>
-                    </tr>";
-            while($row = $result->fetch(PDO::FETCH_ASSOC)) {
-                $output .= "<tr>
-                        <td>" . $row["customer_id"] . "</td>
-                        <td>" . $row["name"] . "</td>
-                        <td>" . $row["last_name"] . "</td>
-                        <td>" . $row["email"] . "</td>
-                        <td>" . $row["birthday"] . "</td>
-                        <td>" . $row["points"] . "</td>
-                      </tr>";
-            }
-            $output .= "</table>";
-        } else {
-            $output .= "Nav atrasts neviens klients.";
+    public static function index() {
+        $customers = DB::run("SELECT * FROM customers")->fetchAll(PDO::FETCH_ASSOC);
+        self::render('index', ['customers' => $customers]);
+    }
+
+    public static function create() {
+        self::render('form');
+    }
+
+    public static function store() {
+        DB::run("INSERT INTO customers (name, last_name, email, birthday, points) VALUES (?, ?, ?, ?, ?)", [
+            $_POST['name'], $_POST['last_name'], $_POST['email'], $_POST['birthday'], $_POST['points']
+        ]);
+        header('Location: /customers');
+    }
+
+    public static function edit() {
+        $id = $_GET['id'] ?? null;
+        if (!$id) return header('Location: /customers');
+        $customer = DB::run("SELECT * FROM customers WHERE customer_id = ?", [$id])->fetch(PDO::FETCH_ASSOC);
+        self::render('form', ['customer' => $customer]);
+    }
+
+    public static function update() {
+        DB::run("UPDATE customers SET name = ?, last_name = ?, email = ?, birthday = ?, points = ? WHERE customer_id = ?", [
+            $_POST['name'], $_POST['last_name'], $_POST['email'], $_POST['birthday'], $_POST['points'], $_POST['customer_id']
+        ]);
+        header('Location: /customers');
+    }
+
+    public static function delete() {
+        $id = $_GET['id'] ?? null;
+        if ($id) {
+            DB::run("DELETE FROM customers WHERE customer_id = ?", [$id]);
         }
-        return $output;
+        header('Location: /customers');
     }
 }
 ?>
