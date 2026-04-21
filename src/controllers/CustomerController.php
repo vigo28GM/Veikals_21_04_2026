@@ -1,7 +1,6 @@
 <?php
 
 class CustomerController {
-    
     private static function render($view, $data = []) {
         extract($data);
         ob_start();
@@ -11,8 +10,15 @@ class CustomerController {
     }
 
     public static function index() {
-        $customers = DB::run("SELECT * FROM customers")->fetchAll(PDO::FETCH_ASSOC);
-        self::render('index', ['customers' => $customers]);
+        $withOrders = ($_GET['with-orders'] ?? '') === 'full';
+        
+        if ($withOrders) {
+            $customers = Customer::allWithOrders();
+            self::render('hierarchical', ['customers' => $customers]);
+        } else {
+            $customers = Customer::all();
+            self::render('index', ['customers' => $customers]);
+        }
     }
 
     public static function create() {
@@ -20,31 +26,25 @@ class CustomerController {
     }
 
     public static function store() {
-        DB::run("INSERT INTO customers (name, last_name, email, birthday, points) VALUES (?, ?, ?, ?, ?)", [
-            $_POST['name'], $_POST['last_name'], $_POST['email'], $_POST['birthday'], $_POST['points']
-        ]);
+        Customer::create($_POST);
         header('Location: /customers');
     }
 
     public static function edit() {
         $id = $_GET['id'] ?? null;
         if (!$id) return header('Location: /customers');
-        $customer = DB::run("SELECT * FROM customers WHERE customer_id = ?", [$id])->fetch(PDO::FETCH_ASSOC);
+        $customer = Customer::find($id);
         self::render('form', ['customer' => $customer]);
     }
 
     public static function update() {
-        DB::run("UPDATE customers SET name = ?, last_name = ?, email = ?, birthday = ?, points = ? WHERE customer_id = ?", [
-            $_POST['name'], $_POST['last_name'], $_POST['email'], $_POST['birthday'], $_POST['points'], $_POST['customer_id']
-        ]);
+        Customer::update($_POST['customer_id'], $_POST);
         header('Location: /customers');
     }
 
     public static function delete() {
         $id = $_GET['id'] ?? null;
-        if ($id) {
-            DB::run("DELETE FROM customers WHERE customer_id = ?", [$id]);
-        }
+        if ($id) Customer::delete($id);
         header('Location: /customers');
     }
 }
