@@ -26,6 +26,7 @@
         <h1>Veikals</h1>
         <nav>
             <a href="/customers">Klienti</a>
+            <a href="/customers?with-orders=full">Klienti (Hierarhiski)</a>
             <a href="/orders">Pasūtījumi</a>
         </nav>
         <?php echo $content; ?>
