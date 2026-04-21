@@ -4,13 +4,11 @@ class DB {
     public static $pdo;
 
     public static function connect() {
-        $servername = "172.21.144.1";
-        $username = "store_app";
-        $password = "password";
-        $dbname = "store_dev";
+        $config = require __DIR__ . '/../config.php';
+        $db = $config['db'];
 
         try {
-            self::$pdo = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+            self::$pdo = new PDO("mysql:host={$db['host']};dbname={$db['name']}", $db['user'], $db['pass']);
             self::$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch(PDOException $e) {
             die("Connection failed: " . $e->getMessage());
