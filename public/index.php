@@ -4,6 +4,7 @@ require __DIR__ . '/../src/controllers/CustomerController.php';
 require __DIR__ . '/../src/models/Customer.php';
 require __DIR__ . '/../src/models/Order.php';
 require __DIR__ . '/../src/controllers/OrderController.php';
+require __DIR__ . '/../src/controllers/HomeController.php';
 
 DB::connect();
 
@@ -11,6 +12,8 @@ $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
 switch ($requestUri) {
     case '/':
+        HomeController::index();
+        break;
     case '/customers':
         CustomerController::index();
         break;
