@@ -1,12 +1,11 @@
 <?php
 
 class CustomerController {
-    public static function index($conn) {
-        $sql = "SELECT * FROM customers";
-        $result = $conn->query($sql);
+    public static function index() {
+        $result = DB::query("SELECT * FROM customers");
 
         $output = "<h2>Klientu saraksts</h2>";
-        if ($result->num_rows > 0) {
+        if ($result->rowCount() > 0) {
             $output .= "<table border='1'>
                     <tr>
                         <th>ID</th>
@@ -16,7 +15,7 @@ class CustomerController {
                         <th>Dzimšanas datums</th>
                         <th>Punkti</th>
                     </tr>";
-            while($row = $result->fetch_assoc()) {
+            while($row = $result->fetch(PDO::FETCH_ASSOC)) {
                 $output .= "<tr>
                         <td>" . $row["customer_id"] . "</td>
                         <td>" . $row["name"] . "</td>
