@@ -1,12 +1,20 @@
 <?php
 
 class Order {
-    public static function all() {
-        return DB::run("
+    public static function all($status = null) {
+        $sql = "
             SELECT orders.*, customers.name, customers.last_name 
             FROM orders 
             JOIN customers ON orders.customer_id = customers.customer_id
-        ")->fetchAll(PDO::FETCH_ASSOC);
+        ";
+        $params = [];
+
+        if ($status) {
+            $sql .= " WHERE orders.status = ?";
+            $params[] = $status;
+        }
+
+        return DB::run($sql, $params)->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public static function find($id) {

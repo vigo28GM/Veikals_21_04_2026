@@ -1,4 +1,13 @@
 <h2>Pasūtījumu saraksts</h2>
+
+<div style="margin-bottom: 20px;">
+    Filtrēt pēc statusa:
+    <a href="/orders" style="<?php echo !$currentStatus ? 'font-weight: bold; text-decoration: none; color: black;' : ''; ?>">Visi</a> |
+    <a href="/orders?status=Jauns" style="<?php echo $currentStatus === 'Jauns' ? 'font-weight: bold; text-decoration: none; color: black;' : ''; ?>">Jauns</a> |
+    <a href="/orders?status=Procesā" style="<?php echo $currentStatus === 'Procesā' ? 'font-weight: bold; text-decoration: none; color: black;' : ''; ?>">Procesā</a> |
+    <a href="/orders?status=Pabeigts" style="<?php echo $currentStatus === 'Pabeigts' ? 'font-weight: bold; text-decoration: none; color: black;' : ''; ?>">Pabeigts</a>
+</div>
+
 <a href="/orders/create" class="btn btn-add">Pievienot jaunu pasūtījumu</a>
 <table>
     <thead>

@@ -10,8 +10,9 @@ class OrderController {
     }
 
     public static function index() {
-        $orders = Order::all();
-        self::render('index', ['orders' => $orders]);
+        $status = $_GET['status'] ?? null;
+        $orders = Order::all($status);
+        self::render('index', ['orders' => $orders, 'currentStatus' => $status]);
     }
 
     public static function create() {
