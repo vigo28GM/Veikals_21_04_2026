@@ -14,14 +14,14 @@
     <tbody>
         <?php foreach ($customers as $customer): ?>
         <tr>
-            <td><?php echo htmlspecialchars($customer['customer_id']); ?></td>
-            <td><?php echo htmlspecialchars($customer['name']); ?></td>
-            <td><?php echo htmlspecialchars($customer['last_name']); ?></td>
-            <td><?php echo htmlspecialchars($customer['email']); ?></td>
-            <td><?php echo htmlspecialchars($customer['points']); ?></td>
+            <td><?php echo htmlspecialchars($customer->customer_id); ?></td>
+            <td><?php echo htmlspecialchars($customer->name); ?></td>
+            <td><?php echo htmlspecialchars($customer->last_name); ?></td>
+            <td><?php echo htmlspecialchars($customer->email); ?></td>
+            <td><?php echo htmlspecialchars($customer->points); ?></td>
             <td>
-                <a href="/customers/edit?id=<?php echo $customer['customer_id']; ?>" class="btn btn-edit">Labot</a>
-                <a href="/customers/delete?id=<?php echo $customer['customer_id']; ?>" class="btn btn-delete" onclick="return confirm('Vai tiešām dzēst?')">Dzēst</a>
+                <a href="/customers/edit?id=<?php echo $customer->customer_id; ?>" class="btn btn-edit">Labot</a>
+                <a href="/customers/delete?id=<?php echo $customer->customer_id; ?>" class="btn btn-delete" onclick="return confirm('Vai tiešām dzēst?')">Dzēst</a>
             </td>
         </tr>
         <?php endforeach; ?>

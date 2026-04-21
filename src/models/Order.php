@@ -1,6 +1,17 @@
 <?php
 
 class Order {
+    public $order_id;
+    public $date;
+    public $status;
+    public $comments;
+    public $arrived_at;
+    public $customer_id;
+    
+    // Properties for JOIN data
+    public $name;
+    public $last_name;
+
     public static function all($status = null) {
         $sql = "
             SELECT orders.*, customers.name, customers.last_name 
@@ -14,15 +25,17 @@ class Order {
             $params[] = $status;
         }
 
-        return DB::run($sql, $params)->fetchAll(PDO::FETCH_ASSOC);
+        return DB::run($sql, $params)->fetchAll(PDO::FETCH_CLASS, 'Order');
     }
 
     public static function find($id) {
-        return DB::run("SELECT * FROM orders WHERE order_id = ?", [$id])->fetch(PDO::FETCH_ASSOC);
+        $stmt = DB::run("SELECT * FROM orders WHERE order_id = ?", [$id]);
+        $stmt->setFetchMode(PDO::FETCH_CLASS, 'Order');
+        return $stmt->fetch();
     }
 
     public static function findByCustomer($customerId) {
-        return DB::run("SELECT * FROM orders WHERE customer_id = ?", [$customerId])->fetchAll(PDO::FETCH_ASSOC);
+        return DB::run("SELECT * FROM orders WHERE customer_id = ?", [$customerId])->fetchAll(PDO::FETCH_CLASS, 'Order');
     }
 
     public static function create($data) {

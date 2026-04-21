@@ -4,18 +4,18 @@
 <ul>
     <?php foreach ($customers as $customer): ?>
         <li>
-            <strong><?php echo htmlspecialchars($customer['name'] . ' ' . $customer['last_name']); ?></strong> 
-            (<?php echo htmlspecialchars($customer['email']); ?>) - <?php echo $customer['points']; ?> punkti
+            <strong><?php echo htmlspecialchars($customer->name . ' ' . $customer->last_name); ?></strong> 
+            (<?php echo htmlspecialchars($customer->email); ?>) - <?php echo $customer->points; ?> punkti
             
-            <?php if (!empty($customer['orders'])): ?>
+            <?php if (!empty($customer->orders)): ?>
                 <ul style="margin-top: 5px; margin-bottom: 15px; color: #555;">
-                    <?php foreach ($customer['orders'] as $order): ?>
+                    <?php foreach ($customer->orders as $order): ?>
                         <li>
-                            Pasūtījums #<?php echo $order['order_id']; ?>: 
-                            <?php echo htmlspecialchars($order['date']); ?> - 
-                            <em><?php echo htmlspecialchars($order['status']); ?></em>
-                            <?php if ($order['comments']): ?>
-                                (Komentārs: <?php echo htmlspecialchars($order['comments']); ?>)
+                            Pasūtījums #<?php echo $order->order_id; ?>: 
+                            <?php echo htmlspecialchars($order->date); ?> - 
+                            <em><?php echo htmlspecialchars($order->status); ?></em>
+                            <?php if ($order->comments): ?>
+                                (Komentārs: <?php echo htmlspecialchars($order->comments); ?>)
                             <?php endif; ?>
                         </li>
                     <?php endforeach; ?>

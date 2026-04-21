@@ -1,12 +1,22 @@
 <?php
 
 class Customer {
+    public $customer_id;
+    public $name;
+    public $last_name;
+    public $email;
+    public $birthday;
+    public $points;
+    public $orders = [];
+
     public static function all() {
-        return DB::run("SELECT * FROM customers")->fetchAll(PDO::FETCH_ASSOC);
+        return DB::run("SELECT * FROM customers")->fetchAll(PDO::FETCH_CLASS, 'Customer');
     }
 
     public static function find($id) {
-        return DB::run("SELECT * FROM customers WHERE customer_id = ?", [$id])->fetch(PDO::FETCH_ASSOC);
+        $stmt = DB::run("SELECT * FROM customers WHERE customer_id = ?", [$id]);
+        $stmt->setFetchMode(PDO::FETCH_CLASS, 'Customer');
+        return $stmt->fetch();
     }
 
     public static function create($data) {
@@ -27,8 +37,8 @@ class Customer {
 
     public static function allWithOrders() {
         $customers = self::all();
-        foreach ($customers as &$customer) {
-            $customer['orders'] = Order::findByCustomer($customer['customer_id']);
+        foreach ($customers as $customer) {
+            $customer->orders = Order::findByCustomer($customer->customer_id);
         }
         return $customers;
     }
