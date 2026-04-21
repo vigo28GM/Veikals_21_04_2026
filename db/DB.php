@@ -20,5 +20,11 @@ class DB {
     public static function query($sqlQuery) {
         return self::$pdo->query($sqlQuery);
     }
+
+    public static function run($sql, $args = []) {
+        $stmt = self::$pdo->prepare($sql);
+        $stmt->execute($args);
+        return $stmt;
+    }
 }
 ?>
