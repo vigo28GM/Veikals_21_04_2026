@@ -25,9 +25,11 @@
     <div class="container">
         <h1>Veikals</h1>
         <nav>
-            <a href="/customers">Klienti</a>
-            <a href="/customers?with-orders=full">Klienti (Hierarhiski)</a>
-            <a href="/orders">Pasūtījumi</a>
+            <?php $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH); ?>
+            <a href="/" style="<?php echo $uri === '/' ? 'text-decoration: underline;' : ''; ?>">Sākums</a>
+            <a href="/customers" style="<?php echo strpos($uri, '/customers') === 0 ? 'text-decoration: underline;' : ''; ?>">Klienti</a>
+            <a href="/customers?with-orders=full" style="<?php echo isset($_GET['with-orders']) ? 'text-decoration: underline;' : ''; ?>">Hierarhija</a>
+            <a href="/orders" style="<?php echo strpos($uri, '/orders') === 0 ? 'text-decoration: underline;' : ''; ?>">Pasūtījumi</a>
         </nav>
         <?php echo $content; ?>
     </div>
