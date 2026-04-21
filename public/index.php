@@ -36,6 +36,12 @@ switch ($requestUri) {
     case '/orders/store':
         OrderController::store();
         break;
+    case '/orders/edit':
+        OrderController::edit();
+        break;
+    case '/orders/update':
+        OrderController::update();
+        break;
     default:
         http_response_code(404);
         echo "404 - Lappuse nav atrasta";
