@@ -30,10 +30,12 @@ Projekts seko stingriem MVC principiem:
       ```php
       <?php
       return [
-          'host' => 'localhost',
-          'db'   => 'store_dev',
-          'user' => 'your_user',
-          'pass' => 'your_password'
+          'db' => [
+              'host' => 'localhost',
+              'name' => 'store_app',
+              'user' => 'your_user',
+              'pass' => 'your_password'
+          ]
       ];
       ```
 3.  **Servera palaišana:**
