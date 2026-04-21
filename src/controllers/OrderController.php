@@ -44,5 +44,13 @@ class OrderController {
         ]);
         header('Location: /orders');
     }
+
+    public static function delete() {
+        $id = $_GET['id'] ?? null;
+        if ($id) {
+            DB::run("DELETE FROM orders WHERE order_id = ?", [$id]);
+        }
+        header('Location: /orders');
+    }
 }
 ?>
