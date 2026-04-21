@@ -17,5 +17,17 @@ class OrderController {
         ")->fetchAll(PDO::FETCH_ASSOC);
         self::render('index', ['orders' => $orders]);
     }
+
+    public static function create() {
+        $customers = DB::run("SELECT customer_id, name, last_name FROM customers")->fetchAll(PDO::FETCH_ASSOC);
+        self::render('form', ['customers' => $customers]);
+    }
+
+    public static function store() {
+        DB::run("INSERT INTO orders (date, status, comments, arrived_at, customer_id) VALUES (?, ?, ?, ?, ?)", [
+            $_POST['date'], $_POST['status'], $_POST['comments'], $_POST['arrived_at'] ?: null, $_POST['customer_id']
+        ]);
+        header('Location: /orders');
+    }
 }
 ?>

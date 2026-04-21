@@ -1,16 +1,13 @@
 <?php
-require __DIR__ . '/../src/controllers/OrderController.php';
 require __DIR__ . '/../db/DB.php';
 require __DIR__ . '/../src/controllers/CustomerController.php';
+require __DIR__ . '/../src/controllers/OrderController.php';
 
 DB::connect();
 
 $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
 switch ($requestUri) {
-    case '/orders':
-        OrderController::index();
-        break;
     case '/':
     case '/customers':
         CustomerController::index();
@@ -29,6 +26,15 @@ switch ($requestUri) {
         break;
     case '/customers/delete':
         CustomerController::delete();
+        break;
+    case '/orders':
+        OrderController::index();
+        break;
+    case '/orders/create':
+        OrderController::create();
+        break;
+    case '/orders/store':
+        OrderController::store();
         break;
     default:
         http_response_code(404);
