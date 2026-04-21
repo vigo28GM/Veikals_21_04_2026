@@ -44,7 +44,12 @@ class CustomerController {
 
     public static function delete() {
         $id = $_GET['id'] ?? null;
-        if ($id) Customer::delete($id);
+        if ($id) {
+            $success = Customer::delete($id);
+            if (!$success) {
+                return header('Location: /customers?error=has_orders');
+            }
+        }
         header('Location: /customers');
     }
 }

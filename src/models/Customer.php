@@ -32,6 +32,15 @@ class Customer {
     }
 
     public static function delete($id) {
+        // Pārbaudām, vai klientam ir pasūtījumi
+        $orderCount = DB::run("SELECT COUNT(*) FROM orders WHERE customer_id = ?", [$id])->fetchColumn();
+        
+        if ($orderCount > 0) {
+            // Ja ir pasūtījumi, dzēst neļaujam
+            return false;
+        }
+        
+        // Ja pasūtījumu nav, dzēšam klientu
         return DB::run("DELETE FROM customers WHERE customer_id = ?", [$id]);
     }
 

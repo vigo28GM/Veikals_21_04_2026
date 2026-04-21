@@ -1,4 +1,11 @@
 <h2>Klientu saraksts</h2>
+
+<?php if (($_GET['error'] ?? '') === 'has_orders'): ?>
+    <div style="background: #f8d7da; color: #721c24; padding: 10px; margin-bottom: 20px; border-radius: 4px;">
+        Kļūda: Klientu nevar izdzēst, jo viņam ir piesaistīti pasūtījumi!
+    </div>
+<?php endif; ?>
+
 <a href="/customers/create" class="btn btn-add">Pievienot jaunu klientu</a>
 <table>
     <thead>
