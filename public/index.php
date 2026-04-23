@@ -30,7 +30,7 @@ $router->add('GET',  '/login',    'AuthController', 'showLogin');
 $router->add('POST', '/login',    'AuthController', 'login');
 $router->add('GET',  '/register', 'AuthController', 'showRegister');
 $router->add('POST', '/register', 'AuthController', 'register');
-$router->add('POST', '/logout',   'AuthController', 'logout');
+$router->add('GET',  '/logout',   'AuthController', 'logout');
 
 // --- Klientu pārvaldības bloks (CRUD) ---
 // Visi maršruti ir aizsargāti ar $auth middleware.
