@@ -59,7 +59,7 @@ class CustomerController {
     }
 
     public function update() {
-        $id = $_POST['id'] ?? null;
+        $id = $_POST['customer_id'] ?? null;
         Customer::update($id, $_POST);
         header('Location: /customers');
     }
@@ -69,7 +69,7 @@ class CustomerController {
      * Dzēšana ar validāciju, lai saglabātu datu integritāti.
      */
     public function delete() {
-        $id = $_POST['id'] ?? null;
+        $id = $_GET['id'] ?? $_POST['customer_id'] ?? null;
         if (Customer::hasOrders($id)) {
             $customers = Customer::all();
             $this->render('index', [

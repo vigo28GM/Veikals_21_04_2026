@@ -5,7 +5,7 @@
  */
 class Customer {
     /** @var int|null Klienta unikālais ID */
-    public $id;
+    public $customer_id;
     /** @var string|null Klienta vārds */
     public $name;
     /** @var string|null Klienta uzvārds */
@@ -24,7 +24,7 @@ class Customer {
      * Konstruktors - inicializē objekta īpašības no masīva datiem.
      */
     public function __construct($data = []) {
-        $this->id = $data['id'] ?? $data['customer_id'] ?? null;
+        $this->customer_id = $data['customer_id'] ?? $data['id'] ?? null;
         $this->name = $data['name'] ?? null;
         $this->last_name = $data['last_name'] ?? null;
         $this->email = $data['email'] ?? null;
@@ -51,7 +51,7 @@ class Customer {
     public static function allWithOrders() {
         $customers = self::all();
         foreach ($customers as $customer) {
-            $customer->orders = Order::findByCustomer($customer->id);
+            $customer->orders = Order::findByCustomer($customer->customer_id);
         }
         return $customers;
     }
@@ -60,7 +60,7 @@ class Customer {
      * Atrod konkrētu klientu pēc tā ID.
      */
     public static function find($id) {
-        $stmt = DB::run("SELECT * FROM customers WHERE id = ?", [$id]);
+        $stmt = DB::run("SELECT * FROM customers WHERE customer_id = ?", [$id]);
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
         return $data ? new self($data) : null;
     }
@@ -87,7 +87,7 @@ class Customer {
      * Atjaunina esoša klienta datus.
      */
     public static function update($id, $data) {
-        return DB::run("UPDATE customers SET name = ?, last_name = ?, email = ?, birthday = ?, points = ? WHERE id = ?", [
+        return DB::run("UPDATE customers SET name = ?, last_name = ?, email = ?, birthday = ?, points = ? WHERE customer_id = ?", [
             $data['name'], $data['last_name'], $data['email'], $data['birthday'], $data['points'], $id
         ]);
     }
@@ -96,6 +96,6 @@ class Customer {
      * Izdzēš klientu no datubāzes pēc ID.
      */
     public static function delete($id) {
-        return DB::run("DELETE FROM customers WHERE id = ?", [$id]);
+        return DB::run("DELETE FROM customers WHERE customer_id = ?", [$id]);
     }
 }

@@ -40,7 +40,7 @@ $router->add('GET',  '/customers/create', 'CustomerController', 'create', $auth)
 $router->add('POST', '/customers/store',  'CustomerController', 'store',  $auth);
 $router->add('GET',  '/customers/edit',   'CustomerController', 'edit',   $auth);
 $router->add('POST', '/customers/update', 'CustomerController', 'update', $auth);
-$router->add('POST', '/customers/delete', 'CustomerController', 'delete', $auth);
+$router->add('GET',  '/customers/delete', 'CustomerController', 'delete', $auth);
 
 // --- Pasūtījumu pārvaldības bloks (CRUD + Komentāri) ---
 // Visi maršruti ir aizsargāti ar $auth middleware.
@@ -52,7 +52,7 @@ $router->add('GET',  '/orders/create', 'OrderController', 'create',     $auth);
 $router->add('POST', '/orders/store',  'OrderController', 'store',      $auth);
 $router->add('GET',  '/orders/edit',   'OrderController', 'edit',       $auth);
 $router->add('POST', '/orders/update', 'OrderController', 'update',     $auth);
-$router->add('POST', '/orders/delete', 'OrderController', 'delete',     $auth);
+$router->add('POST', '/orders/delete', 'OrderController', 'delete', $auth);
 
 /**
  * PIEPRASĪJUMA APSTRĀDE

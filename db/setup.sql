@@ -15,13 +15,13 @@ USE `store_dev` ;
 -- Tabula `customers` - Glabā informāciju par klientiem
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `customers` (
-  `id` INT NOT NULL AUTO_INCREMENT,
+  `customer_id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NULL COMMENT 'Klienta vārds',
   `last_name` VARCHAR(45) NULL COMMENT 'Klienta uzvārds',
   `email` VARCHAR(100) NULL COMMENT 'E-pasta adrese paziņojumiem',
   `birthday` DATE NULL COMMENT 'Dzimšanas diena lojalitātes programmām',
   `points` INT DEFAULT 0 COMMENT 'Uzkrātie punkti',
-  PRIMARY KEY (`id`))
+  PRIMARY KEY (`customer_id`))
 ENGINE = InnoDB;
 
 -- -----------------------------------------------------
@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS `orders` (
   INDEX `fk_orders_customers_idx` (`customer_id` ASC),
   CONSTRAINT `fk_orders_customers`
     FOREIGN KEY (`customer_id`)
-    REFERENCES `customers` (`id`)
+    REFERENCES `customers` (`customer_id`)
     ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;

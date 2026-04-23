@@ -80,7 +80,7 @@ class OrderController {
 
     // --- Dzēšanas operācijas ---
     public function delete() {
-        $id = $_POST['id'] ?? null;
+        $id = $_POST['id'] ?? $_GET['id'] ?? null;
         if ($id) Order::delete($id);
         header('Location: /orders');
     }

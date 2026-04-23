@@ -26,7 +26,7 @@ class Order {
         $sql = "
             SELECT orders.*, customers.name, customers.last_name 
             FROM orders 
-            JOIN customers ON orders.customer_id = customers.id
+            JOIN customers ON orders.customer_id = customers.customer_id
         ";
         $params = [];
 
