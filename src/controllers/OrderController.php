@@ -1,7 +1,13 @@
 <?php
 
 class OrderController {
-    private static function render($view, $data = []) {
+    private $db;
+
+    public function __construct($container) {
+        $this->db = $container->get('db');
+    }
+
+    private function render($view, $data = []) {
         extract($data);
         ob_start();
         require __DIR__ . "/../views/orders/$view.php";
@@ -9,39 +15,38 @@ class OrderController {
         require __DIR__ . "/../views/layout.php";
     }
 
-    public static function index() {
+    public function index() {
         $status = $_GET['status'] ?? null;
         $orders = Order::all($status);
-        self::render('index', ['orders' => $orders, 'currentStatus' => $status]);
+        $this->render('index', ['orders' => $orders, 'currentStatus' => $status]);
     }
 
-    public static function create() {
+    public function create() {
         $customers = Customer::all();
-        self::render('form', ['customers' => $customers]);
+        $this->render('form', ['customers' => $customers]);
     }
 
-    public static function store() {
+    public function store() {
         Order::create($_POST);
         header('Location: /orders');
     }
 
-    public static function edit() {
+    public function edit() {
         $id = $_GET['id'] ?? null;
         if (!$id) return header('Location: /orders');
         $order = Order::find($id);
         $customers = Customer::all();
-        self::render('form', ['order' => $order, 'customers' => $customers]);
+        $this->render('form', ['order' => $order, 'customers' => $customers]);
     }
 
-    public static function update() {
+    public function update() {
         Order::update($_POST['order_id'], $_POST);
         header('Location: /orders');
     }
 
-    public static function delete() {
-        $id = $_GET['id'] ?? null;
+    public function delete() {
+        $id = $_POST['id'] ?? null;
         if ($id) Order::delete($id);
         header('Location: /orders');
     }
 }
-?>

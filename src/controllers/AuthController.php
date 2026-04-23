@@ -1,6 +1,12 @@
 <?php
 
 class AuthController {
+    private $db;
+
+    public function __construct($container) {
+        $this->db = $container->get('db');
+    }
+
     private function render($view, $data = []) {
         extract($data);
         ob_start();

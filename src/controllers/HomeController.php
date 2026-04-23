@@ -1,7 +1,13 @@
 <?php
 
 class HomeController {
-    private static function render($view, $data = []) {
+    private $db;
+
+    public function __construct($container) {
+        $this->db = $container->get('db');
+    }
+
+    private function render($view, $data = []) {
         extract($data);
         ob_start();
         require __DIR__ . "/../views/home/$view.php";
@@ -9,15 +15,14 @@ class HomeController {
         require __DIR__ . "/../views/layout.php";
     }
 
-    public static function index() {
-        // Iegūstam statistikas datus
-        $customerCount = DB::run("SELECT COUNT(*) FROM customers")->fetchColumn();
-        $orderCount = DB::run("SELECT COUNT(*) FROM orders")->fetchColumn();
+    public function index() {
+        // Iegūstam statistikas datus izmantojot injicēto PDO
+        $customerCount = $this->db->query("SELECT COUNT(*) FROM customers")->fetchColumn();
+        $orderCount = $this->db->query("SELECT COUNT(*) FROM orders")->fetchColumn();
         
-        // Papildus: statusu sadalījums
-        $statusStats = DB::run("SELECT status, COUNT(*) as count FROM orders GROUP BY status")->fetchAll(PDO::FETCH_ASSOC);
+        $statusStats = $this->db->query("SELECT status, COUNT(*) as count FROM orders GROUP BY status")->fetchAll(PDO::FETCH_ASSOC);
 
-        self::render('index', [
+        $this->render('index', [
             'customerCount' => $customerCount,
             'orderCount' => $orderCount,
             'statusStats' => $statusStats

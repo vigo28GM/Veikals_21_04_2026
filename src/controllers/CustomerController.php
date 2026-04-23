@@ -1,7 +1,13 @@
 <?php
 
 class CustomerController {
-    private static function render($view, $data = []) {
+    private $db;
+
+    public function __construct($container) {
+        $this->db = $container->get('db');
+    }
+
+    private function render($view, $data = []) {
         extract($data);
         ob_start();
         require __DIR__ . "/../views/customers/$view.php";
@@ -9,48 +15,50 @@ class CustomerController {
         require __DIR__ . "/../views/layout.php";
     }
 
-    public static function index() {
+    public function index() {
         $withOrders = ($_GET['with-orders'] ?? '') === 'full';
         
         if ($withOrders) {
             $customers = Customer::allWithOrders();
-            self::render('hierarchical', ['customers' => $customers]);
+            $this->render('hierarchical', ['customers' => $customers]);
         } else {
             $customers = Customer::all();
-            self::render('index', ['customers' => $customers]);
+            $this->render('index', ['customers' => $customers]);
         }
     }
 
-    public static function create() {
-        self::render('form');
+    public function create() {
+        $this->render('form');
     }
 
-    public static function store() {
+    public function store() {
         Customer::create($_POST);
         header('Location: /customers');
     }
 
-    public static function edit() {
+    public function edit() {
         $id = $_GET['id'] ?? null;
-        if (!$id) return header('Location: /customers');
         $customer = Customer::find($id);
-        self::render('form', ['customer' => $customer]);
+        $this->render('form', ['customer' => $customer]);
     }
 
-    public static function update() {
-        Customer::update($_POST['customer_id'], $_POST);
+    public function update() {
+        $id = $_POST['id'] ?? null;
+        Customer::update($id, $_POST);
         header('Location: /customers');
     }
 
-    public static function delete() {
-        $id = $_GET['id'] ?? null;
-        if ($id) {
-            $success = Customer::delete($id);
-            if (!$success) {
-                return header('Location: /customers?error=has_orders');
-            }
+    public function delete() {
+        $id = $_POST['id'] ?? null;
+        if (Customer::hasOrders($id)) {
+            $customers = Customer::all();
+            $this->render('index', [
+                'customers' => $customers,
+                'error' => "Klientu nevar dzēst, jo viņam ir piesaistīti pasūtījumi!"
+            ]);
+            return;
         }
+        Customer::delete($id);
         header('Location: /customers');
     }
 }
-?>
