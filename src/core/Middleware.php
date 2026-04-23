@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Middleware - Abstrakta bāzes klase visiem sistēmas filtriem.
+ */
 abstract class Middleware {
-    abstract public function handle($container);
+    /**
+     * Metode, kas jāimplementē katram konkrētajam middleware (piem. AuthMiddleware).
+     */
+    abstract public function handle();
 }

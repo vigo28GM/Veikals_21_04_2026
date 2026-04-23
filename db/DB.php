@@ -1,28 +1,38 @@
 <?php
 
+/**
+ * DB - Statiskā palīgklase datubāzes savienojuma pārvaldībai un vaicājumu izpildei.
+ */
 class DB {
     public static $pdo;
 
+    /**
+     * Izveido savienojumu ar datubāzi, izmantojot konfigurācijas failu.
+     */
     public static function connect() {
+        if (self::$pdo) return;
+        
         $config = require __DIR__ . '/../config.php';
-        $db = $config['db'];
-
+        $dsn = "mysql:host={$config['db']['host']};dbname={$config['db']['name']};charset=utf8mb4";
+        
         try {
-            self::$pdo = new PDO("mysql:host={$db['host']};dbname={$db['name']}", $db['user'], $db['pass']);
-            self::$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        } catch(PDOException $e) {
-            die("Connection failed: " . $e->getMessage());
+            self::$pdo = new PDO($dsn, $config['db']['user'], $config['db']['pass'], [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+            ]);
+        } catch (PDOException $e) {
+            die("DB Connection failed: " . $e->getMessage());
         }
     }
 
-    public static function query($sqlQuery) {
-        return self::$pdo->query($sqlQuery);
-    }
-
-    public static function run($sql, $args = []) {
+    /**
+     * Universāla metode SQL vaicājumu izpildei ar sagatavotajiem paziņojumiem (Prepared Statements).
+     * Nodrošina aizsardzību pret SQL injekcijām.
+     */
+    public static function run($sql, $params = []) {
+        self::connect();
         $stmt = self::$pdo->prepare($sql);
-        $stmt->execute($args);
+        $stmt->execute($params);
         return $stmt;
     }
 }
-?>

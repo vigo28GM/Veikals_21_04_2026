@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * AuthController - Atbild par lietotāju autentifikāciju: login, logout un reģistrāciju.
+ */
 class AuthController {
     private $db;
 
@@ -16,6 +19,7 @@ class AuthController {
     }
 
     public function showLogin() {
+        // Ja lietotājs jau ir ielogojies, sūtām uz sākumlapu
         if (isset($_SESSION['user_id'])) {
             header('Location: /');
             exit;
@@ -23,12 +27,16 @@ class AuthController {
         $this->render('login');
     }
 
+    /**
+     * Apstrādā pieteikšanās mēģinājumu.
+     */
     public function login() {
         $username = $_POST['username'] ?? '';
         $password = $_POST['password'] ?? '';
 
         $user = User::findByUsername($username);
 
+        // Pārbaudām lietotājvārdu un šifrēto paroli
         if ($user && $user->verifyPassword($password)) {
             $_SESSION['user_id'] = $user->id;
             $_SESSION['username'] = $user->username;
@@ -49,6 +57,9 @@ class AuthController {
         $this->render('register');
     }
 
+    /**
+     * Izveido jaunu lietotāju datubāzē.
+     */
     public function register() {
         $username = $_POST['username'] ?? '';
         $email = $_POST['email'] ?? '';

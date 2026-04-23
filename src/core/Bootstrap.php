@@ -1,28 +1,36 @@
 <?php
 
 class Bootstrap {
-    public static function start() {
-        if (session_status() === PHP_SESSION_NONE) session_start();
-        self::initAutoloader();
-        
+    public static function init() {
+        // Ieslēdzam sesijas, lai tās būtu pieejamas visā aplikācijā
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        // Reģistrējam autoloaderi, lai nebūtu manuāli jāizmanto 'require' katrai klasei
+        self::registerAutoloader();
+
+        // Izveidojam DI konteineru un reģistrējam tajā pamatpakalpojumus
         $container = new Container();
         self::initServices($container);
-        
+
         return $container;
     }
 
-    private static function initAutoloader() {
+    private static function registerAutoloader() {
         spl_autoload_register(function ($class) {
-            $paths = [
-                __DIR__ . '/../core/',
+            // Norādām mapes, kurās meklēt klases
+            $dirs = [
                 __DIR__ . '/../controllers/',
                 __DIR__ . '/../models/',
+                __DIR__ . '/../core/',
+                __DIR__ . '/../../db/'
             ];
 
-            foreach ($paths as $path) {
-                $file = $path . $class . '.php';
+            foreach ($dirs as $dir) {
+                $file = $dir . $class . '.php';
                 if (file_exists($file)) {
-                    require $file;
+                    require_once $file;
                     return;
                 }
             }
@@ -30,19 +38,19 @@ class Bootstrap {
     }
 
     private static function initServices($container) {
+        // Konfigurējam PDO savienojumu un saglabājam to kā servisu 'db'
         $container->set('db', function() {
             $config = require __DIR__ . '/../../config.php';
-            $dbConfig = $config['db'];
-            
             $pdo = new PDO(
-                "mysql:host={$dbConfig['host']};dbname={$dbConfig['name']}", 
-                $dbConfig['user'], 
-                $dbConfig['pass']
+                "mysql:host={$config['db']['host']};dbname={$config['db']['name']}",
+                $config['db']['user'],
+                $config['db']['pass']
             );
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             return $pdo;
         });
 
+        // Reģistrējam Router servisu
         $container->set('router', function($c) {
             return new Router($c);
         });

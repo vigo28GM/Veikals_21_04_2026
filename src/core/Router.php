@@ -4,51 +4,51 @@ class Router {
     private $routes = [];
     private $container;
 
-    public function __construct($container = null) {
+    public function __construct($container) {
+        // Saglabājam konteineru, lai vēlāk to padotu kontrolieriem
         $this->container = $container;
     }
 
-    public function add($method, $uri, $controller, $methodName, $middleware = []) {
+    // Reģistrē jaunu maršrutu, piesaistot to konkrētai HTTP metodei (GET/POST)
+    public function add($method, $uri, $controller, $action, $middleware = null) {
         $this->routes[] = [
-            'http_method' => $method,
+            'method' => $method,
             'uri' => $uri,
             'controller' => $controller,
-            'method' => $methodName,
+            'action' => $action,
             'middleware' => $middleware
         ];
     }
 
-    public function dispatch($uri, $httpMethod) {
+    public function dispatch($uri, $method) {
         foreach ($this->routes as $route) {
-            if ($route['uri'] === $uri && $route['http_method'] === $httpMethod) {
+            // Pārbaudām, vai URL un HTTP metode sakrīt ar reģistrēto maršrutu
+            if ($route['uri'] === $uri && $route['method'] === $method) {
                 
-                // Izpildām Middleware
-                foreach ($route['middleware'] as $middlewareClass) {
-                    if (class_exists($middlewareClass)) {
-                        $middleware = new $middlewareClass();
-                        $middleware->handle($this->container);
-                    }
+                // Ja maršrutam ir piesaistīts Middleware (filtrs), izpildām to vispirms
+                if ($route['middleware']) {
+                    $route['middleware']->handle();
                 }
 
                 $controllerName = $route['controller'];
-                $methodName = $route['method'];
+                $methodName = $route['action'];
 
                 if (class_exists($controllerName)) {
+                    // Izveidojam kontroliera objektu un injicējam tam DI konteineru
                     $controller = new $controllerName($this->container);
                     if (method_exists($controller, $methodName)) {
                         return $controller->$methodName();
                     }
                 }
-
             }
         }
 
         $this->abort(404);
     }
 
-    private function abort($code = 404, $message = "Lappuse nav atrasta") {
+    protected function abort($code = 404) {
         http_response_code($code);
-        echo "$code - $message";
-        exit;
+        echo "Lapa netika atrasta.";
+        die();
     }
 }

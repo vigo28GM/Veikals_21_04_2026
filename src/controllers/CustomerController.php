@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * CustomerController - Pārvalda klientu CRUD (Create, Read, Update, Delete) operācijas.
+ */
 class CustomerController {
     private $db;
 
@@ -15,6 +18,9 @@ class CustomerController {
         require __DIR__ . "/../views/layout.php";
     }
 
+    /**
+     * Klientu saraksts - atbalsta gan parasto, gan hierarhisko (ar pasūtījumiem) skatu.
+     */
     public function index() {
         $withOrders = ($_GET['with-orders'] ?? '') === 'full';
         
@@ -48,6 +54,9 @@ class CustomerController {
         header('Location: /customers');
     }
 
+    /**
+     * Dzēšanas loģika ar drošības pārbaudi - neļauj dzēst klientu, kam ir pasūtījumi.
+     */
     public function delete() {
         $id = $_POST['id'] ?? null;
         if (Customer::hasOrders($id)) {

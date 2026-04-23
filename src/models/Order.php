@@ -13,10 +13,12 @@ class Order {
     public $last_name;
 
     public static function all($status = null) {
+        // Izmantojam JOIN, lai vienā vaicājumā iegūtu gan pasūtījumu, gan klienta vārdu/uzvārdu
+        // Tas ir efektīvāk nekā sūtīt atsevišķu vaicājumu par katru klientu (N+1 problēmas risinājums)
         $sql = "
             SELECT orders.*, customers.name, customers.last_name 
             FROM orders 
-            JOIN customers ON orders.customer_id = customers.customer_id
+            JOIN customers ON orders.customer_id = customers.id
         ";
         $params = [];
 
@@ -25,6 +27,7 @@ class Order {
             $params[] = $status;
         }
 
+        // PDO automātiski "iepludina" datus Order klases objektos
         return DB::run($sql, $params)->fetchAll(PDO::FETCH_CLASS, 'Order');
     }
 

@@ -1,20 +1,27 @@
 <?php
 
 class Container {
-    private $services = [];
+    // Šeit glabājas funkcijas (closures), kas māk izveidot konkrētus objektus
+    private $bindings = [];
+    // Šeit glabājas jau izveidotie objekti, lai tie nebūtu jātaisa no jauna (Singleton pattern)
+    private $instances = [];
 
-    public function set($name, $callback) {
-        $this->services[$name] = $callback;
+    public function set($name, $callable) {
+        $this->bindings[$name] = $callable;
     }
 
     public function get($name) {
-        if (!isset($this->services[$name])) {
-            throw new Exception("Serviss '$name' nav atrasts konteinerī.");
+        // Ja objekts jau ir izveidots, atdodam to
+        if (isset($this->instances[$name])) {
+            return $this->instances[$name];
         }
 
-        // Izpildām callback, lai iegūtu servisa instanci
-        return is_callable($this->services[$name]) 
-            ? $this->services[$name]($this) 
-            : $this->services[$name];
+        // Ja mums ir recepte šim nosaukumam, izpildām to
+        if (isset($this->bindings[$name])) {
+            $this->instances[$name] = $this->bindings[$name]($this);
+            return $this->instances[$name];
+        }
+
+        throw new Exception("Service not found: " . $name);
     }
 }
