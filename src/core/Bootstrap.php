@@ -43,8 +43,8 @@ class Bootstrap {
             return $pdo;
         });
 
-        $container->set('router', function() {
-            return new Router();
+        $container->set('router', function($c) {
+            return new Router($c);
         });
     }
 }

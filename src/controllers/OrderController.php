@@ -39,6 +39,27 @@ class OrderController {
         $this->render('form', ['order' => $order, 'customers' => $customers]);
     }
 
+    public function show() {
+        $id = $_GET['id'] ?? null;
+        if (!$id) return header('Location: /orders');
+        
+        $order = Order::find($id);
+        $comments = Comment::findByOrder($id);
+        
+        $this->render('show', ['order' => $order, 'comments' => $comments]);
+    }
+
+    public function addComment() {
+        $orderId = $_POST['order_id'] ?? null;
+        $text = $_POST['comment_text'] ?? '';
+        
+        if ($orderId && $text) {
+            Comment::create($orderId, $text);
+        }
+        
+        header("Location: /orders/show?id=$orderId");
+    }
+
     public function update() {
         Order::update($_POST['order_id'], $_POST);
         header('Location: /orders');

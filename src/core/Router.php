@@ -39,6 +39,7 @@ class Router {
                         return $controller->$methodName();
                     }
                 }
+
             }
         }
 

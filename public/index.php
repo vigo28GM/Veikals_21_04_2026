@@ -28,6 +28,8 @@ $router->add('POST', '/customers/update', 'CustomerController', 'update', $auth)
 $router->add('POST', '/customers/delete', 'CustomerController', 'delete', $auth);
 
 $router->add('GET', '/orders', 'OrderController', 'index', $auth);
+$router->add('GET', '/orders/show', 'OrderController', 'show', $auth);
+$router->add('POST', '/orders/comment', 'OrderController', 'addComment', $auth);
 $router->add('GET', '/orders/create', 'OrderController', 'create', $auth);
 $router->add('POST', '/orders/store', 'OrderController', 'store', $auth);
 $router->add('GET', '/orders/edit', 'OrderController', 'edit', $auth);

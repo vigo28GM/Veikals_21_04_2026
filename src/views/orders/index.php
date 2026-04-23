@@ -29,8 +29,12 @@
             <td><?php echo htmlspecialchars($order->status); ?></td>
             <td><?php echo htmlspecialchars($order->arrived_at ?? '-'); ?></td>
             <td>
+                <a href="/orders/show?id=<?php echo $order->order_id; ?>" class="btn btn-edit" style="background: #17a2b8;">Skatīt</a>
                 <a href="/orders/edit?id=<?php echo $order->order_id; ?>" class="btn btn-edit">Labot</a>
-                <a href="/orders/delete?id=<?php echo $order->order_id; ?>" class="btn btn-delete" onclick="return confirm('Vai tiešām dzēst?')">Dzēst</a>
+                <form action="/orders/delete" method="POST" style="display:inline;" onsubmit="return confirm('Vai tiešām dzēst?');">
+                    <input type="hidden" name="id" value="<?php echo $order->order_id; ?>">
+                    <button type="submit" class="btn btn-delete">Dzēst</button>
+                </form>
             </td>
         </tr>
         <?php endforeach; ?>
