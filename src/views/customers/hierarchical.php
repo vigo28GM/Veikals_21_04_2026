@@ -1,3 +1,16 @@
+<?php
+/**
+ * Klientu hierarhijas skats: Attēlo klientus kopā ar viņu pasūtījumiem.
+ * 
+ * Mainīgie:
+ * - $customers: Masīvs ar klientu objektiem, kur katram klientam ir piesaistīti viņa pasūtījumi.
+ * 
+ * Loģika:
+ * - Ārējais cikls iet caur visiem klientiem.
+ * - Iekšējais cikls pārbauda, vai klientam ir pasūtījumi, un attēlo tos sarakstā.
+ * - Ja pasūtījumu nav, tiek parādīts atbilstošs paziņojums.
+ */
+?>
 <h2>Klienti un viņu pasūtījumi</h2>
 <a href="/customers" class="btn btn-edit" style="background:#6c757d; margin-bottom: 20px;">Atpakaļ uz parasto sarakstu</a>
 

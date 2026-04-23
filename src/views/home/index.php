@@ -1,3 +1,17 @@
+<?php
+/**
+ * Sākumlapas skats: Sistēmas pārskats un statistika.
+ * 
+ * Mainīgie:
+ * - $customerCount: Kopējais klientu skaits.
+ * - $orderCount: Kopējais pasūtījumu skaits.
+ * - $statusStats: Statistikas dati par pasūtījumiem sadalījumā pa statusiem.
+ * 
+ * Loģika:
+ * - Attēlo kopsavilkuma blokus ar galvenajiem rādītājiem.
+ * - Izmanto ciklu, lai uzskaitītu pasūtījumu skaitu katrā statusā.
+ */
+?>
 <h2>Sistēmas statistika</h2>
 
 <div style="display: flex; gap: 20px; margin-top: 20px;">

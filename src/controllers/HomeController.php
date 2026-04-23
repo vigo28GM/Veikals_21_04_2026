@@ -1,18 +1,25 @@
 <?php
 
 /**
- * HomeController - Atbild par sākumlapas attēlošanu un statistikas apkopošanu.
+ * HomeController - Atbild par sākumlapas attēlošanu un kopējās statistikas apkopošanu.
  */
 class HomeController {
+    /** @var PDO $db Datubāzes savienojuma objekts */
     private $db;
 
+    /**
+     * Konstruktors - saņem DI konteineru un inicializē DB savienojumu.
+     */
     public function __construct($container) {
-        // Iegūstam DB savienojumu no DI konteinera
+        // Iegūstam DB savienojumu no Dependency Injection konteinera
         $this->db = $container->get('db');
     }
 
     /**
      * Palīgmetode skatu ielādei un datu padošanai (template rendering).
+     * 
+     * @param string $view Skata faila nosaukums
+     * @param array $data Dati, kas tiks padoti skatam
      */
     private function render($view, $data = []) {
         extract($data);
@@ -23,16 +30,18 @@ class HomeController {
     }
 
     /**
-     * Sākumlapas darbība - apkopo statistiku no vairākām tabulām.
+     * Sākumlapas galvenā darbība.
+     * Apkopo datus par klientu skaitu, pasūtījumu skaitu un statusiem.
      */
     public function index() {
-        // Iegūstam statistikas datus izmantojot injicēto PDO
+        // Iegūstam kopējo klientu un pasūtījumu skaitu
         $customerCount = $this->db->query("SELECT COUNT(*) FROM customers")->fetchColumn();
         $orderCount = $this->db->query("SELECT COUNT(*) FROM orders")->fetchColumn();
         
-        // Grupējam pasūtījumus pēc statusa, lai parādītu sadalījumu
+        // Grupējam pasūtījumus pēc statusa, lai analizētu sadalījumu
         $statusStats = $this->db->query("SELECT status, COUNT(*) as count FROM orders GROUP BY status")->fetchAll(PDO::FETCH_ASSOC);
 
+        // Nododam apkopotos datus sākumlapas skatam
         $this->render('index', [
             'customerCount' => $customerCount,
             'orderCount' => $orderCount,

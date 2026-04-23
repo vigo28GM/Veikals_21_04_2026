@@ -1,3 +1,17 @@
+<?php
+/**
+ * Pasūtījuma detaļu skats: Detalizēta informācija un komentāru pārvaldība.
+ * 
+ * Mainīgie:
+ * - $order: Pasūtījuma objekts ar visiem pamatdatiem.
+ * - $comments: Masīvs ar visiem šim pasūtījumam pievienotajiem komentāriem.
+ * 
+ * Loģika:
+ * - Parāda pasūtījuma galveno informāciju.
+ * - Pārbauda, vai ir komentāri: ja ir, izvada tos ciklā; ja nav, parāda paziņojumu.
+ * - Ietver formu jauna komentāra pievienošanai.
+ */
+?>
 <h2>Pasūtījuma #<?= $order->order_id ?> detaļas</h2>
 
 <div style="margin-bottom: 20px; padding: 15px; background: #f9f9f9; border-radius: 5px;">

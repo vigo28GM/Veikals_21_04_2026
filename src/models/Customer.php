@@ -1,19 +1,28 @@
 <?php
 
 /**
- * Customer Model - Reprezentē klientu tabulu un tās saistības.
+ * Customer Model - Reprezentē klientu datu struktūru un nodrošina darbības ar customers tabulu.
  */
 class Customer {
+    /** @var int|null Klienta unikālais ID */
     public $id;
+    /** @var string|null Klienta vārds */
     public $name;
+    /** @var string|null Klienta uzvārds */
     public $last_name;
+    /** @var string|null E-pasta adrese */
     public $email;
+    /** @var string|null Dzimšanas datums (YYYY-MM-DD) */
     public $birthday;
+    /** @var int Uzkrātie lojalitātes punkti */
     public $points;
     
-    // Šeit glabāsim klienta pasūtījumus (hierarhiskajam skatam)
+    /** @var array Glabā piesaistītos pasūtījumus (hierarhiskajam skatam) */
     public $orders = [];
 
+    /**
+     * Konstruktors - inicializē objekta īpašības no masīva datiem.
+     */
     public function __construct($data = []) {
         $this->id = $data['id'] ?? $data['customer_id'] ?? null;
         $this->name = $data['name'] ?? null;
@@ -24,7 +33,7 @@ class Customer {
     }
 
     /**
-     * Atgriež visus klientus kā Customer objektu masīvu.
+     * Atgriež visus klientus kā Customer objektu sarakstu.
      */
     public static function all() {
         $stmt = DB::run("SELECT * FROM customers");
@@ -36,7 +45,8 @@ class Customer {
     }
 
     /**
-     * Iegūst klientus kopā ar visiem to pasūtījumiem (hierarhiskā struktūra).
+     * Iegūst klientus kopā ar visiem to pasūtījumiem.
+     * Izmantots hierarhiskā skata attēlošanai.
      */
     public static function allWithOrders() {
         $customers = self::all();
@@ -46,6 +56,9 @@ class Customer {
         return $customers;
     }
 
+    /**
+     * Atrod konkrētu klientu pēc tā ID.
+     */
     public static function find($id) {
         $stmt = DB::run("SELECT * FROM customers WHERE id = ?", [$id]);
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -53,25 +66,35 @@ class Customer {
     }
 
     /**
-     * Pārbauda, vai klientam ir piesaistīti pasūtījumi (izmantots pirms dzēšanas).
+     * Pārbauda, vai klientam ir piesaistīti pasūtījumi.
+     * Drošības pārbaude pirms klienta dzēšanas.
      */
     public static function hasOrders($id) {
         $stmt = DB::run("SELECT COUNT(*) FROM orders WHERE customer_id = ?", [$id]);
         return $stmt->fetchColumn() > 0;
     }
 
+    /**
+     * Saglabā jaunu klientu datubāzē.
+     */
     public static function create($data) {
         return DB::run("INSERT INTO customers (name, last_name, email, birthday, points) VALUES (?, ?, ?, ?, ?)", [
             $data['name'], $data['last_name'], $data['email'], $data['birthday'], $data['points']
         ]);
     }
 
+    /**
+     * Atjaunina esoša klienta datus.
+     */
     public static function update($id, $data) {
         return DB::run("UPDATE customers SET name = ?, last_name = ?, email = ?, birthday = ?, points = ? WHERE id = ?", [
             $data['name'], $data['last_name'], $data['email'], $data['birthday'], $data['points'], $id
         ]);
     }
 
+    /**
+     * Izdzēš klientu no datubāzes pēc ID.
+     */
     public static function delete($id) {
         return DB::run("DELETE FROM customers WHERE id = ?", [$id]);
     }

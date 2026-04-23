@@ -1,3 +1,14 @@
+<?php
+/**
+ * Autentifikācijas skats: Jauna lietotāja reģistrācijas forma.
+ * 
+ * Mainīgie:
+ * - $error: Neobligāts kļūdas paziņojums, ja reģistrācija neizdodas.
+ * 
+ * Loģika:
+ * - Attēlo kļūdas paziņojumu, ja tāds ir nodots no kontroliera.
+ */
+?>
 <h2>Reģistrēties</h2>
 
 <?php if (isset($error)): ?>

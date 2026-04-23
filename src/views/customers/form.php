@@ -1,3 +1,15 @@
+<?php
+/**
+ * Klientu pārvaldības skats: Forma klienta pievienošanai vai labošanai.
+ * 
+ * Mainīgie:
+ * - $customer: Neobligāts klienta objekts (tikai labošanas režīmā).
+ * 
+ * Loģika:
+ * - Dinamiski maina virsrakstu un darbības URL atkarībā no tā, vai klients tiek pievienots vai labots.
+ * - Ja klients eksistē, aizpilda formas laukus ar esošajiem datiem.
+ */
+?>
 <h2><?php echo isset($customer) ? 'Labot klientu' : 'Pievienot klientu'; ?></h2>
 <form action="<?php echo isset($customer) ? '/customers/update' : '/customers/store'; ?>" method="POST">
     <?php if (isset($customer)): ?>

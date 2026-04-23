@@ -1,3 +1,16 @@
+<?php
+/**
+ * Klientu saraksta skats: Pamata tabula ar visiem klientiem.
+ * 
+ * Mainīgie:
+ * - $customers: Masīvs ar visiem klientu datiem no datubāzes.
+ * 
+ * Loģika:
+ * - Pārbauda URL parametrus, lai parādītu kļūdas ziņojumu, ja mēģināts dzēst klientu ar pasūtījumiem.
+ * - Cikls iet caur klientiem un aizpilda tabulas rindas.
+ * - Katrai rindai ir saites uz labošanu un dzēšanu (ar apstiprinājuma dialogu).
+ */
+?>
 <h2>Klientu saraksts</h2>
 
 <?php if (($_GET['error'] ?? '') === 'has_orders'): ?>

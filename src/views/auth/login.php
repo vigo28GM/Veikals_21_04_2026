@@ -1,3 +1,14 @@
+<?php
+/**
+ * Autentifikācijas skats: Lietotāja pieteikšanās forma.
+ * 
+ * Mainīgie:
+ * - $error: Neobligāts kļūdas paziņojums, ja pieteikšanās nav veiksmīga.
+ * 
+ * Loģika:
+ * - Pārbauda, vai ir iestatīts $error, un attēlo to lietotājam.
+ */
+?>
 <h2>Pieteikties</h2>
 
 <?php if (isset($error)): ?>

@@ -1,3 +1,16 @@
+<?php
+/**
+ * Pasūtījumu pārvaldības skats: Forma pasūtījuma izveidei vai labošanai.
+ * 
+ * Mainīgie:
+ * - $order: Neobligāts pasūtījuma objekts (tikai labošanas režīmā).
+ * - $customers: Saraksts ar visiem klientiem, lai tos varētu izvēlēties nolaižamajā izvēlnē.
+ * 
+ * Loģika:
+ * - Dinamiski pielāgo formu pievienošanai vai rediģēšanai.
+ * - Cikls cauri klientu sarakstam, lai ģenerētu izvēles opcijas, atzīmējot pašreizējo klientu.
+ */
+?>
 <h2><?php echo isset($order) ? 'Labot pasūtījumu' : 'Pievienot pasūtījumu'; ?></h2>
 <form action="<?php echo isset($order) ? '/orders/update' : '/orders/store'; ?>" method="POST">
     <?php if (isset($order)): ?>

@@ -1,15 +1,22 @@
 <?php
 
 /**
- * CustomerController - Pārvalda klientu CRUD (Create, Read, Update, Delete) operācijas.
+ * CUSTOMER CONTROLLER
+ * Pārvalda visu klientu loģiku un datu plūsmu uz skatiem.
  */
 class CustomerController {
+    
+    // --- Īpašības un Konstruktors ---
     private $db;
 
     public function __construct($container) {
         $this->db = $container->get('db');
     }
 
+    // --- Palīgmetodes ---
+    /**
+     * Centralizēta skatu ielādes metode.
+     */
     private function render($view, $data = []) {
         extract($data);
         ob_start();
@@ -18,8 +25,9 @@ class CustomerController {
         require __DIR__ . "/../views/layout.php";
     }
 
+    // --- Lasīšanas operācijas (Read) ---
     /**
-     * Klientu saraksts - atbalsta gan parasto, gan hierarhisko (ar pasūtījumiem) skatu.
+     * Galvenais saraksts ar atbalstu hierarhiskajam skatam.
      */
     public function index() {
         $withOrders = ($_GET['with-orders'] ?? '') === 'full';
@@ -33,6 +41,7 @@ class CustomerController {
         }
     }
 
+    // --- Izveides operācijas (Create) ---
     public function create() {
         $this->render('form');
     }
@@ -42,6 +51,7 @@ class CustomerController {
         header('Location: /customers');
     }
 
+    // --- Atjaunināšanas operācijas (Update) ---
     public function edit() {
         $id = $_GET['id'] ?? null;
         $customer = Customer::find($id);
@@ -54,8 +64,9 @@ class CustomerController {
         header('Location: /customers');
     }
 
+    // --- Dzēšanas operācijas (Delete) ---
     /**
-     * Dzēšanas loģika ar drošības pārbaudi - neļauj dzēst klientu, kam ir pasūtījumi.
+     * Dzēšana ar validāciju, lai saglabātu datu integritāti.
      */
     public function delete() {
         $id = $_POST['id'] ?? null;

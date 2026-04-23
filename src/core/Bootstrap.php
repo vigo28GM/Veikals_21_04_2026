@@ -1,25 +1,38 @@
 <?php
 
+/**
+ * Bootstrap klase - Atbild par sistēmas inicializāciju un pamatpakalpojumu reģistrāciju.
+ */
 class Bootstrap {
+    /**
+     * Inicializē aplikāciju: sāk sesiju, reģistrē autoloaderi un sagatavo DI konteineru.
+     * 
+     * @return Container Atgriež sagatavotu servisu konteineru
+     */
     public static function init() {
-        // Ieslēdzam sesijas, lai tās būtu pieejamas visā aplikācijā
+        // Ieslēdzam sesijas, lai tās būtu pieejamas visā aplikācijā (lietotāju datiem)
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
 
-        // Reģistrējam autoloaderi, lai nebūtu manuāli jāizmanto 'require' katrai klasei
+        // Reģistrējam autoloaderi, lai klases tiktu ielādētas automātiski pēc pieprasījuma
         self::registerAutoloader();
 
-        // Izveidojam DI konteineru un reģistrējam tajā pamatpakalpojumus
+        // Izveidojam Dependency Injection konteineru
         $container = new Container();
+        
+        // Reģistrējam pamatpakalpojumus (DB, Router u.c.)
         self::initServices($container);
 
         return $container;
     }
 
+    /**
+     * Reģistrē PHP autoloaderi, kas meklē klases norādītajās mapēs.
+     */
     private static function registerAutoloader() {
         spl_autoload_register(function ($class) {
-            // Norādām mapes, kurās meklēt klases
+            // Saraksts ar mapēm, kurās tiek glabāti klašu faili
             $dirs = [
                 __DIR__ . '/../controllers/',
                 __DIR__ . '/../models/',
@@ -27,6 +40,7 @@ class Bootstrap {
                 __DIR__ . '/../../db/'
             ];
 
+            // Pārbaudām katru mapi, līdz atrodam atbilstošo failu
             foreach ($dirs as $dir) {
                 $file = $dir . $class . '.php';
                 if (file_exists($file)) {
@@ -37,8 +51,13 @@ class Bootstrap {
         });
     }
 
+    /**
+     * Reģistrē aplikācijas pamatpakalpojumus DI konteinerā.
+     * 
+     * @param Container $container
+     */
     private static function initServices($container) {
-        // Konfigurējam PDO savienojumu un saglabājam to kā servisu 'db'
+        // Konfigurējam PDO datubāzes savienojumu kā servisu 'db'
         $container->set('db', function() {
             $config = require __DIR__ . '/../../config.php';
             $pdo = new PDO(
@@ -50,7 +69,7 @@ class Bootstrap {
             return $pdo;
         });
 
-        // Reģistrējam Router servisu
+        // Reģistrējam Router servisu, padodot tam pašu konteineru
         $container->set('router', function($c) {
             return new Router($c);
         });

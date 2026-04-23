@@ -1,3 +1,17 @@
+<?php
+/**
+ * Pasūtījumu saraksta skats: Tabula ar visiem pasūtījumiem un filtrēšanas iespējām.
+ * 
+ * Mainīgie:
+ * - $orders: Pasūtījumu saraksts ar piesaistītajiem klientu vārdiem.
+ * - $currentStatus: Pašreizējais aktīvais filtrs pēc statusa.
+ * 
+ * Loģika:
+ * - Piedāvā filtrēšanas saites, vizuāli izceļot aktīvo filtru.
+ * - Cikls cauri pasūtījumiem, lai tos attēlotu tabulā.
+ * - Katram pasūtījumam ir pogas skatīšanai, labošanai un dzēšanai (ar formas palīdzību).
+ */
+?>
 <h2>Pasūtījumu saraksts</h2>
 
 <div style="margin-bottom: 20px;">
