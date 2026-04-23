@@ -26,7 +26,6 @@
         <h1>Veikals</h1>
         <nav>
             <?php 
-            if (session_status() === PHP_SESSION_NONE) session_start();
             $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH); 
             ?>
             <a href="/" style="<?php echo $uri === '/' ? 'text-decoration: underline;' : ''; ?>">Sākums</a>

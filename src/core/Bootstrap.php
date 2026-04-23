@@ -2,6 +2,7 @@
 
 class Bootstrap {
     public static function start() {
+        if (session_status() === PHP_SESSION_NONE) session_start();
         self::initAutoloader();
         
         $container = new Container();

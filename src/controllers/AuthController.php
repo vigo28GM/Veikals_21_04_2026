@@ -10,7 +10,6 @@ class AuthController {
     }
 
     public function showLogin() {
-        if (session_status() === PHP_SESSION_NONE) session_start();
         if (isset($_SESSION['user_id'])) {
             header('Location: /');
             exit;
@@ -25,7 +24,6 @@ class AuthController {
         $user = User::findByUsername($username);
 
         if ($user && $user->verifyPassword($password)) {
-            if (session_status() === PHP_SESSION_NONE) session_start();
             $_SESSION['user_id'] = $user->id;
             $_SESSION['username'] = $user->username;
             header('Location: /');
@@ -36,7 +34,6 @@ class AuthController {
     }
 
     public function logout() {
-        if (session_status() === PHP_SESSION_NONE) session_start();
         session_destroy();
         header('Location: /login');
         exit;

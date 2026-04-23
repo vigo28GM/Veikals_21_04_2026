@@ -8,32 +8,33 @@ DB::$pdo = $container->get('db');
 
 $router = $container->get('router');
 
-// Atvērtie maršruti (bez autentifikācijas)
-$router->add('/login', 'AuthController', 'showLogin');
-$router->add('/login', 'AuthController', 'login'); // POST būtu labāk atsevišķi, bet šis Router atbalsta abus vienā URI
-$router->add('/register', 'AuthController', 'showRegister');
-$router->add('/register', 'AuthController', 'register');
-$router->add('/logout', 'AuthController', 'logout');
+// Autentifikācija
+$router->add('GET', '/login', 'AuthController', 'showLogin');
+$router->add('POST', '/login', 'AuthController', 'login');
+$router->add('GET', '/register', 'AuthController', 'showRegister');
+$router->add('POST', '/register', 'AuthController', 'register');
+$router->add('GET', '/logout', 'AuthController', 'logout');
 
-// Aizsargātie maršruti (nepieciešams AuthMiddleware)
+// Aizsargātie maršruti
 $auth = ['AuthMiddleware'];
 
-$router->add('/', 'HomeController', 'index', $auth);
+$router->add('GET', '/', 'HomeController', 'index', $auth);
 
-$router->add('/customers', 'CustomerController', 'index', $auth);
-$router->add('/customers/create', 'CustomerController', 'create', $auth);
-$router->add('/customers/store', 'CustomerController', 'store', $auth);
-$router->add('/customers/edit', 'CustomerController', 'edit', $auth);
-$router->add('/customers/update', 'CustomerController', 'update', $auth);
-$router->add('/customers/delete', 'CustomerController', 'delete', $auth);
+$router->add('GET', '/customers', 'CustomerController', 'index', $auth);
+$router->add('GET', '/customers/create', 'CustomerController', 'create', $auth);
+$router->add('POST', '/customers/store', 'CustomerController', 'store', $auth);
+$router->add('GET', '/customers/edit', 'CustomerController', 'edit', $auth);
+$router->add('POST', '/customers/update', 'CustomerController', 'update', $auth);
+$router->add('POST', '/customers/delete', 'CustomerController', 'delete', $auth);
 
-$router->add('/orders', 'OrderController', 'index', $auth);
-$router->add('/orders/create', 'OrderController', 'create', $auth);
-$router->add('/orders/store', 'OrderController', 'store', $auth);
-$router->add('/orders/edit', 'OrderController', 'edit', $auth);
-$router->add('/orders/update', 'OrderController', 'update', $auth);
-$router->add('/orders/delete', 'OrderController', 'delete', $auth);
+$router->add('GET', '/orders', 'OrderController', 'index', $auth);
+$router->add('GET', '/orders/create', 'OrderController', 'create', $auth);
+$router->add('POST', '/orders/store', 'OrderController', 'store', $auth);
+$router->add('GET', '/orders/edit', 'OrderController', 'edit', $auth);
+$router->add('POST', '/orders/update', 'OrderController', 'update', $auth);
+$router->add('POST', '/orders/delete', 'OrderController', 'delete', $auth);
 
 // Apstrādājam pieprasījumu
 $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$router->dispatch($requestUri);
+$requestMethod = $_SERVER['REQUEST_METHOD'];
+$router->dispatch($requestUri, $requestMethod);

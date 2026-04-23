@@ -8,42 +8,41 @@ class Router {
         $this->container = $container;
     }
 
-    public function add($uri, $controller, $method, $middleware = []) {
-        $this->routes[$uri] = [
+    public function add($method, $uri, $controller, $methodName, $middleware = []) {
+        $this->routes[] = [
+            'http_method' => $method,
+            'uri' => $uri,
             'controller' => $controller,
-            'method' => $method,
+            'method' => $methodName,
             'middleware' => $middleware
         ];
     }
 
-    public function dispatch($uri) {
-        if (array_key_exists($uri, $this->routes)) {
-            $route = $this->routes[$uri];
-            
-            // Izpildām Middleware
-            foreach ($route['middleware'] as $middlewareClass) {
-                if (class_exists($middlewareClass)) {
-                    $middleware = new $middlewareClass();
-                    $middleware->handle($this->container);
+    public function dispatch($uri, $httpMethod) {
+        foreach ($this->routes as $route) {
+            if ($route['uri'] === $uri && $route['http_method'] === $httpMethod) {
+                
+                // Izpildām Middleware
+                foreach ($route['middleware'] as $middlewareClass) {
+                    if (class_exists($middlewareClass)) {
+                        $middleware = new $middlewareClass();
+                        $middleware->handle($this->container);
+                    }
+                }
+
+                $controllerName = $route['controller'];
+                $methodName = $route['method'];
+
+                if (class_exists($controllerName)) {
+                    $controller = new $controllerName($this->container);
+                    if (method_exists($controller, $methodName)) {
+                        return $controller->$methodName();
+                    }
                 }
             }
-
-            $controllerName = $route['controller'];
-            $methodName = $route['method'];
-
-            if (class_exists($controllerName)) {
-                $controller = new $controllerName($this->container);
-                if (method_exists($controller, $methodName)) {
-                    $controller->$methodName();
-                } else {
-                    $this->abort(404, "Metode $methodName netika atrasta kontrolierī $controllerName.");
-                }
-            } else {
-                $this->abort(404, "Kontrolieris $controllerName netika atrasts.");
-            }
-        } else {
-            $this->abort(404);
         }
+
+        $this->abort(404);
     }
 
     private function abort($code = 404, $message = "Lappuse nav atrasta") {
