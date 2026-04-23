@@ -2,6 +2,11 @@
 
 class Router {
     private $routes = [];
+    private $container;
+
+    public function __construct($container = null) {
+        $this->container = $container;
+    }
 
     public function add($uri, $controller, $method) {
         $this->routes[$uri] = [
@@ -16,7 +21,7 @@ class Router {
             $methodName = $this->routes[$uri]['method'];
 
             if (class_exists($controllerName)) {
-                $controller = new $controllerName();
+                $controller = new $controllerName($this->container);
                 if (method_exists($controller, $methodName)) {
                     $controller->$methodName();
                 } else {

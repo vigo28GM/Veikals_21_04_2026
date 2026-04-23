@@ -1,25 +1,13 @@
 <?php
-// Autoloader core klasēm un kontrolieriem
-spl_autoload_register(function ($class) {
-    $paths = [
-        __DIR__ . '/../src/core/',
-        __DIR__ . '/../src/controllers/',
-        __DIR__ . '/../src/models/',
-    ];
+require __DIR__ . '/../src/core/Bootstrap.php';
 
-    foreach ($paths as $path) {
-        $file = $path . $class . '.php';
-        if (file_exists($file)) {
-            require $file;
-            return;
-        }
-    }
-});
+$container = Bootstrap::start();
 
+// Pagaidām saglabājam DB klases savienojumu, lai nesalauztu esošos kontrolierus
 require __DIR__ . '/../db/DB.php';
-DB::connect();
+DB::$pdo = $container->get('db');
 
-$router = new Router();
+$router = $container->get('router');
 
 // Definējam maršrutus
 $router->add('/', 'HomeController', 'index');
