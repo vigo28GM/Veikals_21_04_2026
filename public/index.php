@@ -1,58 +1,43 @@
 <?php
-require __DIR__ . '/../db/DB.php';
-require __DIR__ . '/../src/controllers/CustomerController.php';
-require __DIR__ . '/../src/models/Customer.php';
-require __DIR__ . '/../src/models/Order.php';
-require __DIR__ . '/../src/controllers/OrderController.php';
-require __DIR__ . '/../src/controllers/HomeController.php';
+// Autoloader core klasēm un kontrolieriem
+spl_autoload_register(function ($class) {
+    $paths = [
+        __DIR__ . '/../src/core/',
+        __DIR__ . '/../src/controllers/',
+        __DIR__ . '/../src/models/',
+    ];
 
+    foreach ($paths as $path) {
+        $file = $path . $class . '.php';
+        if (file_exists($file)) {
+            require $file;
+            return;
+        }
+    }
+});
+
+require __DIR__ . '/../db/DB.php';
 DB::connect();
 
-$requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$router = new Router();
 
-switch ($requestUri) {
-    case '/':
-        HomeController::index();
-        break;
-    case '/customers':
-        CustomerController::index();
-        break;
-    case '/customers/create':
-        CustomerController::create();
-        break;
-    case '/customers/store':
-        CustomerController::store();
-        break;
-    case '/customers/edit':
-        CustomerController::edit();
-        break;
-    case '/customers/update':
-        CustomerController::update();
-        break;
-    case '/customers/delete':
-        CustomerController::delete();
-        break;
-    case '/orders':
-        OrderController::index();
-        break;
-    case '/orders/create':
-        OrderController::create();
-        break;
-    case '/orders/store':
-        OrderController::store();
-        break;
-    case '/orders/edit':
-        OrderController::edit();
-        break;
-    case '/orders/update':
-        OrderController::update();
-        break;
-    case '/orders/delete':
-        OrderController::delete();
-        break;
-    default:
-        http_response_code(404);
-        echo "404 - Lappuse nav atrasta";
-        break;
-}
-?>
+// Definējam maršrutus
+$router->add('/', 'HomeController', 'index');
+
+$router->add('/customers', 'CustomerController', 'index');
+$router->add('/customers/create', 'CustomerController', 'create');
+$router->add('/customers/store', 'CustomerController', 'store');
+$router->add('/customers/edit', 'CustomerController', 'edit');
+$router->add('/customers/update', 'CustomerController', 'update');
+$router->add('/customers/delete', 'CustomerController', 'delete');
+
+$router->add('/orders', 'OrderController', 'index');
+$router->add('/orders/create', 'OrderController', 'create');
+$router->add('/orders/store', 'OrderController', 'store');
+$router->add('/orders/edit', 'OrderController', 'edit');
+$router->add('/orders/update', 'OrderController', 'update');
+$router->add('/orders/delete', 'OrderController', 'delete');
+
+// Apstrādājam pieprasījumu
+$requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$router->dispatch($requestUri);
