@@ -25,11 +25,27 @@
     <div class="container">
         <h1>Veikals</h1>
         <nav>
-            <?php $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH); ?>
+            <?php 
+            if (session_status() === PHP_SESSION_NONE) session_start();
+            $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH); 
+            ?>
             <a href="/" style="<?php echo $uri === '/' ? 'text-decoration: underline;' : ''; ?>">Sākums</a>
-            <a href="/customers" style="<?php echo strpos($uri, '/customers') === 0 ? 'text-decoration: underline;' : ''; ?>">Klienti</a>
-            <a href="/customers?with-orders=full" style="<?php echo isset($_GET['with-orders']) ? 'text-decoration: underline;' : ''; ?>">Hierarhija</a>
-            <a href="/orders" style="<?php echo strpos($uri, '/orders') === 0 ? 'text-decoration: underline;' : ''; ?>">Pasūtījumi</a>
+            
+            <?php if (isset($_SESSION['user_id'])): ?>
+                <a href="/customers" style="<?php echo strpos($uri, '/customers') === 0 && !isset($_GET['with-orders']) ? 'text-decoration: underline;' : ''; ?>">Klienti</a>
+                <a href="/customers?with-orders=full" style="<?php echo isset($_GET['with-orders']) ? 'text-decoration: underline;' : ''; ?>">Hierarhija</a>
+                <a href="/orders" style="<?php echo strpos($uri, '/orders') === 0 ? 'text-decoration: underline;' : ''; ?>">Pasūtījumi</a>
+                
+                <span style="float: right;">
+                    Sveiki, <strong><?= htmlspecialchars($_SESSION['username']) ?></strong>!
+                    <a href="/logout" style="margin-left: 10px; color: #dc3545;">Izrakstīties</a>
+                </span>
+            <?php else: ?>
+                <span style="float: right;">
+                    <a href="/login" style="<?php echo $uri === '/login' ? 'text-decoration: underline;' : ''; ?>">Pieteikties</a>
+                    <a href="/register" style="<?php echo $uri === '/register' ? 'text-decoration: underline;' : ''; ?>">Reģistrēties</a>
+                </span>
+            <?php endif; ?>
         </nav>
         <?php echo $content; ?>
     </div>
